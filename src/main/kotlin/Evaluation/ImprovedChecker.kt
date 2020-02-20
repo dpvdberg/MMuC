@@ -69,7 +69,7 @@ class ImprovedChecker : MuFormulaChecker {
                 }
                 do {
                     s = environment[f.variable]!!
-                    environment[f.variable] = eval(lts, f.body, environment)
+                    environment[f.variable] = eval(lts, f.body, environment, alreadyEvaluated, values)
                 } while (environment[f.variable]!! != s)
             }
             is Nu -> {
@@ -81,7 +81,7 @@ class ImprovedChecker : MuFormulaChecker {
                 }
                 do {
                     s = environment[f.variable]!!
-                    environment[f.variable] = eval(lts, f.body, environment)
+                    environment[f.variable] = eval(lts, f.body, environment, alreadyEvaluated, values)
                 } while (environment[f.variable]!! != s)
             }
         }
