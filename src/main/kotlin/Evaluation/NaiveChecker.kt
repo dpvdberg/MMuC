@@ -44,9 +44,18 @@ class NaiveChecker : MuFormulaChecker {
                 }.toSet()
             }
             is Mu -> {
+                environment[f.variable] = emptySet()
+                do {
+                    s = environment[f.variable]!!
+                    environment[f.variable] = eval(lts, f.body, environment)
+                } while (environment[f.variable]!! != s)
             }
             is Nu -> {
-
+                environment[f.variable] = lts.nodes.toSet()
+                do {
+                    s = environment[f.variable]!!
+                    environment[f.variable] = eval(lts, f.body, environment)
+                } while (environment[f.variable]!! != s)
             }
         }
 

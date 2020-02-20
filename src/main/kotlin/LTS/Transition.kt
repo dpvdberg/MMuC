@@ -1,4 +1,4 @@
 package LTS
 
-class Transition(label: String, destination: Node) {
+class Transition(var label: String, var destination: Node) {
 }
