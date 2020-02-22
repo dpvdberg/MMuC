@@ -2,16 +2,12 @@ package ModalMu
 
 import javax.swing.tree.VariableHeightLayoutCache
 
-fun ModalFormula.getVariables() : List<Variable> {
+fun ModalFormula.getFixedPoints() : List<ModalFormula> {
     return emptyList()
 }
 
-fun ModalFormula.getFixedPointVariable(x : Variable) : FixedPoint {
-    return FixedPoint.MU
-}
-
-fun ModalFormula.getSurroundingFixedPoint(x : Variable) : FixedPoint {
-    return FixedPoint.MU
+fun ModalFormula.getSurroundingFixedPoint(x : Variable) : ModalFormula {
+    return TrueProposition()
 }
 
 fun ModalFormula.getSubVariables() : List<Variable> {
