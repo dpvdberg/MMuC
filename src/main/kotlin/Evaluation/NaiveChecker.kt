@@ -24,9 +24,9 @@ class NaiveChecker : MuFormulaChecker {
             is Exists -> {
                 var subset = eval(lts, f.body, environment)
                 // {s in S | exists t in subset : transition (s,t) has label a}
-                s = lts.nodes.filter{
-                    it.transitions.any {
-                        it.destination in subset && it.label == f.label
+                s = lts.nodes.filter{n ->
+                    n.transitions.any {t ->
+                        t.destination in subset && t.label == f.label
                     }
                 }.toSet()
             }
@@ -37,8 +37,8 @@ class NaiveChecker : MuFormulaChecker {
                 // {n in S | forall m in S: !(transition (n,m) has label a) || m in subset}
                 s = lts.nodes.filter{n ->
                     lts.nodes.all{m ->
-                        n.transitions.none {
-                            (it.destination.equals(m) && it.label == f.label)
+                        n.transitions.none {t ->
+                            (t.destination.equals(m) && t.label == f.label)
                         } || m in subset
                     }
                 }.toSet()
