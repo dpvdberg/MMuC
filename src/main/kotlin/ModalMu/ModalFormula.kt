@@ -1,6 +1,6 @@
 package ModalMu
 
-sealed class ModalFormula
+sealed class ModalFormula(var isSentence : Boolean? = null)
 
 class And(var left : ModalFormula, var right : ModalFormula) : ModalFormula()
 
