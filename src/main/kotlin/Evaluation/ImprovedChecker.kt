@@ -82,7 +82,7 @@ class ImprovedChecker : MuFormulaChecker {
             is Operator ->
                 when (f) {
                     is Operator.Mu -> {
-                        if (f.getSurroundingFixedPoint(f.variable) is Operator.Nu) {
+                        if (f.getSurroundingFixedPoint() is Operator.Nu) {
                             environment[f.variable] = emptySet()
                             for (g in f.getFixedPoints()) {
                                 environment[g.variable] = emptySet()
@@ -94,7 +94,7 @@ class ImprovedChecker : MuFormulaChecker {
                         } while (environment[f.variable]!! != s)
                     }
                     is Operator.Nu -> {
-                        if (f.getSurroundingFixedPoint(f.variable) is Operator.Mu) {
+                        if (f.getSurroundingFixedPoint() is Operator.Mu) {
                             environment[f.variable] = lts.nodes.toSet()
                             for (g in f.getFixedPoints()) {
                                 environment[g.variable] = emptySet()
