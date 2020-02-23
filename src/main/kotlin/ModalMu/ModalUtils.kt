@@ -2,7 +2,7 @@ package ModalMu
 
 import javax.swing.tree.VariableHeightLayoutCache
 
-fun ModalFormula.getFixedPoints() : List<Operator> {
+fun ModalFormula.getFixedPoints(): List<Operator> {
     return when (this) {
         is Operator.Mu -> listOf(this) + this.body.getFixedPoints()
         is Operator.Nu -> listOf(this) + this.body.getFixedPoints()
@@ -16,11 +16,78 @@ fun ModalFormula.getFixedPoints() : List<Operator> {
     }
 }
 
-fun Operator.getSurroundingFixedPoint() : ModalFormula {
-    return TrueProposition
+fun ModalFormula.getSurroundingFixedPoint(): Operator? {
+    var f: ModalFormula? = this
+
+    do {
+        f = f?.parent
+    } while (f != null && f !is Operator)
+
+    return f as Operator?
 }
 
-fun ModalFormula.computeIsSentence() {
+fun ModalFormula.computeIsSentence() : Set<Variable> {
     // a sentence is a modal mu formula with no free fixed point variables
     //https://staff.fnwi.uva.nl/j.vanbenthem/SahlmuFinal.pdf
+
+    when (this) {
+        is Operator -> {
+            var freeVar = this.body.computeIsSentence()
+            if (freeVar.equals(setOf(this.variable))) {
+                this.isSentence = true
+                return emptySet()
+            } else {
+                this.isSentence = false
+                return freeVar.minus(this.variable)
+            }
+        }
+        is TrueProposition, is FalseProposition -> {
+            this.isSentence = true
+            return emptySet()
+        }
+        is Variable -> {
+            this.isSentence = false
+            return setOf(this)
+        }
+        is And -> {
+            var freeVar = this.left.computeIsSentence().union(this.right.computeIsSentence())
+            this.isSentence = freeVar.isEmpty()
+            return freeVar
+        }
+        is Or -> {
+            var freeVar = this.left.computeIsSentence().union(this.right.computeIsSentence())
+            this.isSentence = freeVar.isEmpty()
+            return freeVar
+        }
+        is Exists -> {
+            var freeVar = this.body.computeIsSentence()
+            this.isSentence = freeVar.isEmpty()
+            return freeVar
+        }
+        is ForAll -> {
+            var freeVar = this.body.computeIsSentence()
+            this.isSentence = freeVar.isEmpty()
+            return freeVar
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

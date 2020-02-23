@@ -7,6 +7,7 @@ import ModalMu.*
 class NaiveChecker : MuFormulaChecker {
 
 
+
     override fun check(lts: LabelledTransitionSystem, formula: ModalFormula): Boolean {
         val states: Set<Node> = eval(lts, formula, mutableMapOf())
         return lts.initialNode in states
