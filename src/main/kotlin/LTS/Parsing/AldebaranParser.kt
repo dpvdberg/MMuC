@@ -3,8 +3,6 @@ package LTS.Parsing
 import LTS.LabelledTransitionSystem
 import LTS.Node
 import LTS.Transition
-import java.io.File
-import java.lang.IllegalArgumentException
 
 class AldebaranParser {
     companion object {
@@ -20,7 +18,7 @@ class AldebaranParser {
             val stringValues = first.substringAfter('(').substringBefore(')').split(',')
             val (initIndex, transitionCount, nodeCount) = stringValues.map { it.toInt() }
 
-            val nodes = (0 until nodeCount).map { i -> Node(i) }.toList()
+            val nodes = (0 until nodeCount).map { Node() }.toList()
 
             lineIterator.forEachRemaining { s ->
                 if (s.isNotEmpty()) {

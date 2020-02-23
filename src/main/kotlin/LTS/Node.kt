@@ -1,5 +1,5 @@
 package LTS
 
-class Node(index: Int) {
+class Node {
     var transitions = mutableListOf<Transition>()
 }
