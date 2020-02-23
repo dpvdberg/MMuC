@@ -17,12 +17,16 @@ class AldebaranParser {
             }
 
             // Remove parentheses at the end.
-            val stringValues = first.substringAfter('(').trim(')').split(',')
+            val stringValues = first.substringAfter('(').substringBefore(')').split(',')
             val (initIndex, transitionCount, nodeCount) = stringValues.map { it.toInt() }
 
             val nodes = (0 until nodeCount).map { i -> Node(i) }.toList()
 
-            lineIterator.forEachRemaining { s -> parseTransition(s, nodes) }
+            lineIterator.forEachRemaining { s ->
+                if (s.isNotEmpty()) {
+                    parseTransition(s, nodes)
+                }
+            }
 
             return LabelledTransitionSystem(nodes[initIndex], transitionCount, nodes)
         }

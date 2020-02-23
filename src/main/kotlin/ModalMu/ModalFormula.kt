@@ -22,4 +22,15 @@ object TrueProposition : ModalFormula()
 
 object FalseProposition : ModalFormula()
 
-class Variable(var name: Char) : ModalFormula()
+class Variable(var name: Char) : ModalFormula() {
+    override fun equals(other: Any?): Boolean {
+        if (other is Variable) {
+            return name == other.name
+        }
+        return false
+    }
+
+    override fun hashCode(): Int {
+        return name.hashCode()
+    }
+}

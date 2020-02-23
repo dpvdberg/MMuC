@@ -8,20 +8,20 @@ class ImprovedChecker : MuFormulaChecker {
 
 
     override fun check(lts: LabelledTransitionSystem, formula: ModalFormula): Boolean {
-        val map = mutableMapOf<Variable, Set<Node>>()
+        val environment = mutableMapOf<Variable, Set<Node>>()
         for (x in formula.getFixedPoints()) {
             when (x) {
                 is Operator.Mu ->
-                    map[x.variable] = emptySet()
+                    environment[x.variable] = emptySet()
                 is Operator.Nu ->
-                    map[x.variable] = lts.nodes.toSet()
+                    environment[x.variable] = lts.nodes.toSet()
             }
         }
 
         val alreadyEvaluated = mutableMapOf<ModalFormula, Boolean>().withDefault { false }
         val values = mutableMapOf<ModalFormula, Set<Node>>()
 
-        val states: Set<Node> = eval(lts, formula, mutableMapOf(), alreadyEvaluated, values)
+        val states: Set<Node> = eval(lts, formula, environment, alreadyEvaluated, values)
         return lts.initialNode in states
     }
 
@@ -89,7 +89,7 @@ class ImprovedChecker : MuFormulaChecker {
                             }
                         }
                         do {
-                            s = environment[f.variable]!!
+                            s = environment.getOrDefault(f.variable, emptySet())
                             environment[f.variable] = eval(lts, f.body, environment, alreadyEvaluated, values)
                         } while (environment[f.variable]!! != s)
                     }
@@ -101,7 +101,7 @@ class ImprovedChecker : MuFormulaChecker {
                             }
                         }
                         do {
-                            s = environment[f.variable]!!
+                            s = environment.getOrDefault(f.variable, emptySet())
                             environment[f.variable] = eval(lts, f.body, environment, alreadyEvaluated, values)
                         } while (environment[f.variable]!! != s)
                     }
