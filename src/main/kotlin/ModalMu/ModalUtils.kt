@@ -32,7 +32,7 @@ fun ModalFormula.computeIsSentence() : Set<Variable> {
 
     when (this) {
         is Operator -> {
-            var freeVar = this.body.computeIsSentence()
+            val freeVar = this.body.computeIsSentence()
             if (freeVar.equals(setOf(this.variable))) {
                 this.isSentence = true
                 return emptySet()
@@ -50,22 +50,22 @@ fun ModalFormula.computeIsSentence() : Set<Variable> {
             return setOf(this)
         }
         is And -> {
-            var freeVar = this.left.computeIsSentence().union(this.right.computeIsSentence())
+            val freeVar = this.left.computeIsSentence().union(this.right.computeIsSentence())
             this.isSentence = freeVar.isEmpty()
             return freeVar
         }
         is Or -> {
-            var freeVar = this.left.computeIsSentence().union(this.right.computeIsSentence())
+            val freeVar = this.left.computeIsSentence().union(this.right.computeIsSentence())
             this.isSentence = freeVar.isEmpty()
             return freeVar
         }
         is Exists -> {
-            var freeVar = this.body.computeIsSentence()
+            val freeVar = this.body.computeIsSentence()
             this.isSentence = freeVar.isEmpty()
             return freeVar
         }
         is ForAll -> {
-            var freeVar = this.body.computeIsSentence()
+            val freeVar = this.body.computeIsSentence()
             this.isSentence = freeVar.isEmpty()
             return freeVar
         }
