@@ -5,6 +5,7 @@ import ModalMu.Parsing.ModalMuParser
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.choice
@@ -15,6 +16,18 @@ fun main(args: Array<String>) = ModalMuClikt().main(args)
 enum class EvaluationMethod {
     NAIVE,
     IMPROVED
+}
+
+fun printlndbg(message: Any?) {
+    if (ModalMuClikt.verbose) {
+        println(message)
+    }
+}
+
+fun printdbg(message: Any?) {
+    if (ModalMuClikt.verbose) {
+        print(message)
+    }
 }
 
 class ModalMuClikt : CliktCommand() {
@@ -45,8 +58,24 @@ class ModalMuClikt : CliktCommand() {
         "--formula-dir",
         help = "Path to directory that contain Modal Mu Formula files to check, formula files should have $extension extension"
     ).file(mustExist = true, mustBeReadable = true, canBeDir = true, canBeFile = false)
+    private val autoFindFormulas by option(
+        "-a",
+        "--auto",
+        help = "Automatically find formulas in the directory of the LTS file, formula files should have $extension extension"
+    ).flag()
+    private val verbose by option(
+        "-v",
+        "--verbose",
+        help = "Verbose printing, such as evaluation iteration count"
+    ).flag()
+
+    companion object {
+        var verbose = false
+    }
 
     override fun run() {
+        ModalMuClikt.verbose = verbose
+
         println("Reading LTS file...")
         val lts = AldebaranParser.parse(ltsFile.readText().lineSequence())
 
@@ -59,6 +88,12 @@ class ModalMuClikt : CliktCommand() {
         formulaDir
             ?.listFiles { _, fileName -> fileName.toLowerCase().endsWith(extension) }
             ?.forEach { f -> formulas += ModalMuParser.parse(f.readText()) }
+
+        if (autoFindFormulas) {
+            ltsFile.parentFile
+                .listFiles { _, fileName -> fileName.toLowerCase().endsWith(extension) }
+                ?.forEach { f -> formulas += ModalMuParser.parse(f.readText()) }
+        }
 
         println("Read a total of ${formulas.size} formulas.")
 

@@ -3,13 +3,22 @@ package Evaluation
 import LTS.LabelledTransitionSystem
 import LTS.Node
 import ModalMu.*
+import com.andreapivetta.kolor.yellow
+import printdbg
+import printlndbg
 
 class NaiveChecker : MuFormulaChecker {
-
+    var iteration = 0
 
 
     override fun check(lts: LabelledTransitionSystem, formula: ModalFormula): Boolean {
+        iteration = 0
+        printdbg("Iteration: ".yellow())
+
         val states: Set<Node> = eval(lts, formula, mutableMapOf())
+
+        // Go to next line
+        printlndbg("")
         return lts.initialNode in states
     }
 
@@ -18,6 +27,7 @@ class NaiveChecker : MuFormulaChecker {
         f: ModalFormula,
         environment: MutableMap<Variable, Set<Node>>
     ): Set<Node> {
+        printdbg("${iteration++}, ".yellow())
         var s = emptySet<Node>()
 
         when (f) {
