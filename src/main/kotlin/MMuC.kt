@@ -2,6 +2,7 @@ import Evaluation.ImprovedChecker
 import Evaluation.NaiveChecker
 import LTS.Parsing.AldebaranParser
 import ModalMu.Parsing.ModalMuParser
+import com.andreapivetta.kolor.red
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.default
@@ -95,6 +96,11 @@ class ModalMuClikt : CliktCommand() {
                 ?.forEach { f -> formulas += ModalMuParser.parse(f.readText()) }
         }
 
+        if (formulas.size <= 0) {
+            println("There are no formulas to check.".red())
+            println("Use one or more flags to add formulas to check, see the help section (--help flag)".red())
+            return
+        }
         println("Read a total of ${formulas.size} formulas.")
 
         println("Using $method evaluation method.")
