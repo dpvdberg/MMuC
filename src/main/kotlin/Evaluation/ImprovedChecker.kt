@@ -8,7 +8,7 @@ import com.andreapivetta.kolor.yellow
 import printdbg
 import printlndbg
 
-class ImprovedChecker : MuFormulaChecker {
+class ImprovedChecker : MuFormulaChecker() {
     var iteration = 0
 
     override fun check(lts: LabelledTransitionSystem, formula: ModalFormula): Boolean {

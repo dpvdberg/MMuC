@@ -8,7 +8,7 @@ import com.andreapivetta.kolor.yellow
 import printdbg
 import printlndbg
 
-class NaiveChecker : MuFormulaChecker {
+class NaiveChecker : MuFormulaChecker() {
     var iteration = 0
 
 

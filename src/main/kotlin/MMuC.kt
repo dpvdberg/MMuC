@@ -6,9 +6,15 @@ import ModalMu.Parsing.ModalMuParser
 import com.andreapivetta.kolor.red
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
-import com.github.ajalt.clikt.parameters.options.*
+import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.multiple
+import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.file
+import javafx.util.Duration.millis
+import java.util.concurrent.TimeUnit
+
 
 fun main(args: Array<String>) = MMuC()
     .main(args)
@@ -68,6 +74,11 @@ class MMuC : CliktCommand() {
         "--verbose",
         help = "Verbose printing, such as evaluation iteration count"
     ).flag()
+    private val timer by option(
+        "-t",
+        "--timer",
+        help = "Enable a timer for each formula"
+    ).flag()
 
     companion object {
         var verbose = false
@@ -112,8 +123,19 @@ class MMuC : CliktCommand() {
         formulasWithName.forEachIndexed { index, formula ->
             run {
                 println("formula $index: ${formula.second}")
-                val result = formulaChecker.check(lts, formula.first)
-                println("Result of formula: $result")
+                if (timer) {
+                    val (result, msElapsed) = formulaChecker.checkTimed(lts, formula.first)
+                    val hms = java.lang.String.format(
+                        "%02dh:%02dm:%02ds", TimeUnit.MILLISECONDS.toHours(msElapsed),
+                        TimeUnit.MILLISECONDS.toMinutes(msElapsed) % TimeUnit.HOURS.toMinutes(1),
+                        TimeUnit.MILLISECONDS.toSeconds(msElapsed) % TimeUnit.MINUTES.toSeconds(1)
+                    )
+                    println("Result of formula: $result")
+                    println("Elapsed time: $hms ($msElapsed ms)")
+                } else {
+                    val result = formulaChecker.check(lts, formula.first)
+                    println("Result of formula: $result")
+                }
                 println()
             }
         }
