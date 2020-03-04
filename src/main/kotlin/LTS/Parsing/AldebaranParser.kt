@@ -25,7 +25,7 @@ class AldebaranParser {
 
             printlndbg("Init node: $initIndex, transition count: $transitionCount, node count: $nodeCount".yellow())
 
-            val nodes = (0 until nodeCount).map { Node() }.toList()
+            val nodes = (0 until nodeCount).map { i -> Node(i) }.toList()
 
             lineIterator.forEachRemaining { s ->
                 if (s.isNotEmpty()) {

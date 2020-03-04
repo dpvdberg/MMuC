@@ -32,6 +32,9 @@ class ImprovedChecker : MuFormulaChecker {
 
         // Go to next line
         printlndbg("")
+
+        printlndbg("Valid in states: {${states.joinToString { n -> n.index.toString() }}}".yellow())
+
         return lts.initialNode in states
     }
 
