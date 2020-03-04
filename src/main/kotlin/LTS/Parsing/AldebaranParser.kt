@@ -10,7 +10,7 @@ import printlndbg
 class AldebaranParser {
     companion object {
         fun parse(lines: Sequence<String>): LabelledTransitionSystem {
-            printlndbg("Parsing LTS".yellow())
+            printlndbg("Parsing LTS".green())
             val lineIterator = lines.iterator()
 
             val first = lineIterator.next()

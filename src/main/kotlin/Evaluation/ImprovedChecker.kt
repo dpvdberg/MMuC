@@ -3,6 +3,7 @@ package Evaluation
 import LTS.LabelledTransitionSystem
 import LTS.Node
 import ModalMu.*
+import com.andreapivetta.kolor.green
 import com.andreapivetta.kolor.yellow
 import printdbg
 import printlndbg
@@ -11,9 +12,9 @@ class ImprovedChecker : MuFormulaChecker {
     var iteration = 0
 
     override fun check(lts: LabelledTransitionSystem, formula: ModalFormula): Boolean {
-        printlndbg("Checking formula against LTS.".yellow())
+        printlndbg("Checking formula against LTS.".green())
         iteration = 0
-        printdbg("Iteration: ".yellow())
+        printdbg("Iteration: ".green())
 
         val environment = mutableMapOf<Variable, Set<Node>>()
         for (x in formula.getFixedPoints()) {
@@ -33,7 +34,8 @@ class ImprovedChecker : MuFormulaChecker {
         // Go to next line
         printlndbg("")
 
-        printlndbg("Valid in states: {${states.joinToString { n -> n.index.toString() }}}".yellow())
+        printdbg("Valid in states: ".green())
+        printlndbg("{${states.joinToString { n -> n.index.toString() }}}".yellow())
 
         return lts.initialNode in states
     }

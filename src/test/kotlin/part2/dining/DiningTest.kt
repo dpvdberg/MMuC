@@ -5,6 +5,7 @@ import Evaluation.NaiveChecker
 import Facade.ModalMuFacade
 import LTS.Parsing.AldebaranParserTest
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.File
 
@@ -49,6 +50,7 @@ internal class DiningTest {
     }
 
     @Test
+    @Disabled
     fun modalCheckerTest() {
         val lts = getLts()
         val formula = getFormulas()
