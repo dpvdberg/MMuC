@@ -13,3 +13,4 @@ LABEL : [a-z][a-z0-9_]*;
 OR : '||';
 AND : '&&';
 WS: [ \n\t\r]+ -> skip;
+LINE_COMMENT: '%' ~[\r\n]* -> skip;
