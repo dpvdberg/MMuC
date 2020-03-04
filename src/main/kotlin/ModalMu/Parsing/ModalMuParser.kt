@@ -1,18 +1,20 @@
 package ModalMu.Parsing
 
-import LTS.LabelledTransitionSystem
-import LTS.Node
-import LTS.Transition
 import ModalMu.*
 import ModalMu.Parsing.Grammar.ModalMuLexer
 import ModalMu.Parsing.Grammar.ModalMuParser
 import ModalMu.Parsing.Grammar.VisitModalMu
+import com.andreapivetta.kolor.green
+import com.andreapivetta.kolor.yellow
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
+import printlndbg
 
 class ModalMuParser {
     companion object {
-        fun parse(formula : String): ModalFormula {
+        fun parse(formula: String): ModalFormula {
+            printlndbg("Parsing to modal mu formula: $formula".yellow())
+
             val lexer = ModalMuLexer(CharStreams.fromString(formula))
             val tokens = CommonTokenStream(lexer)
             val parser = ModalMuParser(tokens)
@@ -20,10 +22,11 @@ class ModalMuParser {
 
             val modalFormula = visitor.visit(parser.formula())
             setParent(modalFormula)
+            printlndbg("Parse success".green())
             return modalFormula
         }
 
-        private fun setParent(formula: ModalFormula, parent : ModalFormula? = null) {
+        private fun setParent(formula: ModalFormula, parent: ModalFormula? = null) {
             when (formula) {
                 is Operator -> {
                     formula.parent = parent

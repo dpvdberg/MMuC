@@ -26,7 +26,7 @@ fun ModalFormula.getSurroundingFixedPoint(): Operator? {
     return f as Operator?
 }
 
-fun ModalFormula.computeIsSentence() : Set<Variable> {
+fun ModalFormula.computeIsSentence(): Set<Variable> {
     // a sentence is a modal mu formula with no free fixed point variables
     //https://staff.fnwi.uva.nl/j.vanbenthem/SahlmuFinal.pdf
 
@@ -71,23 +71,3 @@ fun ModalFormula.computeIsSentence() : Set<Variable> {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
