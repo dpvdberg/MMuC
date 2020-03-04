@@ -6,14 +6,12 @@ import ModalMu.Parsing.ModalMuParser
 import com.andreapivetta.kolor.red
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
-import com.github.ajalt.clikt.parameters.options.default
-import com.github.ajalt.clikt.parameters.options.flag
-import com.github.ajalt.clikt.parameters.options.multiple
-import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.file
 
-fun main(args: Array<String>) = ModalMuChecker().main(args)
+fun main(args: Array<String>) = MMuC()
+    .main(args)
 
 enum class EvaluationMethod {
     NAIVE,
@@ -21,18 +19,18 @@ enum class EvaluationMethod {
 }
 
 fun printlndbg(message: Any?) {
-    if (ModalMuChecker.verbose) {
+    if (MMuC.verbose) {
         println(message)
     }
 }
 
 fun printdbg(message: Any?) {
-    if (ModalMuChecker.verbose) {
+    if (MMuC.verbose) {
         print(message)
     }
 }
 
-class ModalMuChecker : CliktCommand() {
+class MMuC : CliktCommand() {
     private val extension = ".mcf"
 
     private val ltsFile by argument("LTS_PATH", help = "The path to the LTS file in Aldebaran format").file(
@@ -76,7 +74,7 @@ class ModalMuChecker : CliktCommand() {
     }
 
     override fun run() {
-        ModalMuChecker.verbose = verbose
+        MMuC.verbose = verbose
 
         println("Reading LTS file...")
         val lts = AldebaranParser.parse(ltsFile.readText().lineSequence())
