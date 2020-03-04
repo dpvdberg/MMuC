@@ -1,5 +1,6 @@
 package ModalMu
 
+import com.sun.org.apache.xpath.internal.operations.Bool
 import javax.swing.tree.VariableHeightLayoutCache
 
 fun ModalFormula.getFixedPoints(): List<Operator> {
@@ -13,6 +14,45 @@ fun ModalFormula.getFixedPoints(): List<Operator> {
         is TrueProposition -> emptyList()
         is FalseProposition -> emptyList()
         is Variable -> emptyList()
+    }
+}
+
+fun Operator.getOpenSubOperators() = sequence {
+    yieldAll(getOpenSubOperators(this@getOpenSubOperators))
+}
+
+fun getOpenSubOperators(start: Operator, current: ModalFormula = start) : Sequence<Operator> = sequence<Operator> {
+    when (current) {
+        is Operator.Mu -> {
+            if (start is Operator.Nu) {
+                return@sequence
+            } else if (start is Operator.Mu) {
+                if (!current.isSentence) {
+                    yield(current)
+                }
+                yieldAll(getOpenSubOperators(start, current.body))
+            }
+        }
+        is Operator.Nu -> {
+            if (start is Operator.Mu) {
+                return@sequence
+            } else if (start is Operator.Nu) {
+                if (!current.isSentence) {
+                    yield(current)
+                }
+                yieldAll(getOpenSubOperators(start, current.body))
+            }
+        }
+        is And -> {
+            yieldAll(getOpenSubOperators(start, current.left))
+            yieldAll(getOpenSubOperators(start, current.right))
+        }
+        is Or -> {
+            yieldAll(getOpenSubOperators(start, current.left))
+            yieldAll(getOpenSubOperators(start, current.right))
+        }
+        is Exists -> yieldAll(getOpenSubOperators(start, current.body))
+        is ForAll -> yieldAll(getOpenSubOperators(start, current.body))
     }
 }
 
