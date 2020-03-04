@@ -1,6 +1,7 @@
 import Evaluation.ImprovedChecker
 import Evaluation.NaiveChecker
 import LTS.Parsing.AldebaranParser
+import ModalMu.ModalFormula
 import ModalMu.Parsing.ModalMuParser
 import com.andreapivetta.kolor.red
 import com.github.ajalt.clikt.core.CliktCommand
@@ -12,7 +13,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.file
 
-fun main(args: Array<String>) = ModalMuClikt().main(args)
+fun main(args: Array<String>) = ModalMuChecker().main(args)
 
 enum class EvaluationMethod {
     NAIVE,
@@ -20,18 +21,18 @@ enum class EvaluationMethod {
 }
 
 fun printlndbg(message: Any?) {
-    if (ModalMuClikt.verbose) {
+    if (ModalMuChecker.verbose) {
         println(message)
     }
 }
 
 fun printdbg(message: Any?) {
-    if (ModalMuClikt.verbose) {
+    if (ModalMuChecker.verbose) {
         print(message)
     }
 }
 
-class ModalMuClikt : CliktCommand() {
+class ModalMuChecker : CliktCommand() {
     private val extension = ".mcf"
 
     private val ltsFile by argument("LTS_PATH", help = "The path to the LTS file in Aldebaran format").file(
@@ -41,7 +42,7 @@ class ModalMuClikt : CliktCommand() {
         canBeFile = true
     )
 
-    private val method by option("-m", "--method", help = "Evaluation method, default: optimized").choice(
+    private val method by option("-m", "--method", help = "Evaluation method, default: improved").choice(
         mapOf(
             "naive" to EvaluationMethod.NAIVE,
             "improved" to EvaluationMethod.IMPROVED
@@ -75,7 +76,7 @@ class ModalMuClikt : CliktCommand() {
     }
 
     override fun run() {
-        ModalMuClikt.verbose = verbose
+        ModalMuChecker.verbose = verbose
 
         println("Reading LTS file...")
         val lts = AldebaranParser.parse(ltsFile.readText().lineSequence())
@@ -83,25 +84,26 @@ class ModalMuClikt : CliktCommand() {
         println("Successfully parsed LTS file.")
 
         println("Reading and parsing formulas...")
-        val formulas = formulas.map { f -> ModalMuParser.parse(f) }.toMutableList()
-        formulas += formulaFiles.map { f -> ModalMuParser.parse(f.readText()) }
+        val formulasWithName = mutableListOf<Pair<ModalFormula, String>>()
+        formulasWithName += formulas.mapIndexed { i, s ->  Pair(ModalMuParser.parse(s), "Textual formula $i") }
+        formulasWithName += formulaFiles.map { f -> Pair(ModalMuParser.parse(f.readText()), "Formula file: ${f.name}") }
 
         formulaDir
             ?.listFiles { _, fileName -> fileName.toLowerCase().endsWith(extension) }
-            ?.forEach { f -> formulas += ModalMuParser.parse(f.readText()) }
+            ?.forEach { f -> formulasWithName += Pair(ModalMuParser.parse(f.readText()), "Formula file in directory: ${f.name}") }
 
         if (autoFindFormulas) {
             ltsFile.parentFile
                 .listFiles { _, fileName -> fileName.toLowerCase().endsWith(extension) }
-                ?.forEach { f -> formulas += ModalMuParser.parse(f.readText()) }
+                ?.forEach { f -> formulasWithName += Pair(ModalMuParser.parse(f.readText()), "Formula file found in LTS dir: ${f.name}") }
         }
 
-        if (formulas.size <= 0) {
+        if (formulasWithName.size <= 0) {
             println("There are no formulas to check.".red())
             println("Use one or more flags to add formulas to check, see the help section (--help flag)".red())
             return
         }
-        println("Read a total of ${formulas.size} formulas.")
+        println("Read a total of ${formulasWithName.size} formulas.")
 
         println("Using $method evaluation method.")
         val formulaChecker = when(method) {
@@ -109,10 +111,12 @@ class ModalMuClikt : CliktCommand() {
             EvaluationMethod.IMPROVED -> ImprovedChecker()
         }
 
-        formulas.forEachIndexed { index, formula ->
+        formulasWithName.forEachIndexed { index, formula ->
             run {
-                val result = formulaChecker.check(lts, formula)
-                println("Result of formula $index : $result")
+                println("formula $index: ${formula.second}")
+                val result = formulaChecker.check(lts, formula.first)
+                println("Result of formula: $result")
+                println()
             }
         }
     }
