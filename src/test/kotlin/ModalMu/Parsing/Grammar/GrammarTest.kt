@@ -47,4 +47,11 @@ internal class GrammarTest {
         assert(modalFormula is Operator.Nu)
         assert((modalFormula as Operator.Nu).body is ForAll)
     }
+
+    @Test
+    fun parse3() {
+        val modalFormula = ModalMu.Parsing.ModalMuParser.parse("mu X. ([tau]X && (<tau>true || <a>true))")
+
+        assert(modalFormula is Operator.Mu)
+    }
 }
