@@ -3,17 +3,18 @@ package Evaluation
 import LTS.LabelledTransitionSystem
 import LTS.Node
 import ModalMu.*
+import com.andreapivetta.kolor.green
 import com.andreapivetta.kolor.yellow
 import printdbg
 import printlndbg
 
-class ImprovedChecker : MuFormulaChecker {
+class ImprovedChecker : MuFormulaChecker() {
     var iteration = 0
 
     override fun check(lts: LabelledTransitionSystem, formula: ModalFormula): Boolean {
-        printlndbg("Checking formula against LTS.".yellow())
+        printlndbg("Checking formula against LTS.".green())
         iteration = 0
-        printdbg("Iteration: ".yellow())
+        printdbg("Iteration: ".green())
 
         val environment = mutableMapOf<Variable, Set<Node>>()
         for (x in formula.getFixedPoints()) {
@@ -32,6 +33,10 @@ class ImprovedChecker : MuFormulaChecker {
 
         // Go to next line
         printlndbg("")
+
+        printdbg("Valid in states: ".green())
+        printlndbg("{${states.joinToString { n -> n.index.toString() }}}".yellow())
+
         return lts.initialNode in states
     }
 
@@ -95,7 +100,7 @@ class ImprovedChecker : MuFormulaChecker {
                     is Operator.Mu -> {
                         if (f.getSurroundingFixedPoint() is Operator.Nu) {
                             environment[f.variable] = emptySet()
-                            for (g in f.getFixedPoints()) {
+                            for (g in f.getOpenSubOperators()) {
                                 environment[g.variable] = emptySet()
                             }
                         }
@@ -107,8 +112,8 @@ class ImprovedChecker : MuFormulaChecker {
                     is Operator.Nu -> {
                         if (f.getSurroundingFixedPoint() is Operator.Mu) {
                             environment[f.variable] = lts.nodes.toSet()
-                            for (g in f.getFixedPoints()) {
-                                environment[g.variable] = emptySet()
+                            for (g in f.getOpenSubOperators()) {
+                                environment[g.variable] = lts.nodes.toSet()
                             }
                         }
                         do {
@@ -119,11 +124,7 @@ class ImprovedChecker : MuFormulaChecker {
                 }
         }
 
-
-        if (f.isSentence == null) {
-            f.computeIsSentence()
-        }
-        if (f.isSentence!!) {
+        if (f.isSentence) {
             alreadyEvaluated[f] = true
             values[f] = s
         }

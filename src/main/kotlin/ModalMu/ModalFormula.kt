@@ -1,6 +1,19 @@
 package ModalMu
 
-sealed class ModalFormula(var isSentence : Boolean? = null, var parent : ModalFormula? = null)
+sealed class ModalFormula(var parent : ModalFormula? = null) {
+    private var sequence : Boolean? = null
+
+    var isSentence : Boolean
+        get() {
+            if (sequence == null) {
+                this.computeIsSentence()
+            }
+            return sequence!!
+        }
+        set(value) {
+            sequence = value
+        }
+}
 
 class And(var left: ModalFormula, var right: ModalFormula) : ModalFormula()
 

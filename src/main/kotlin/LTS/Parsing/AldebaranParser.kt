@@ -10,7 +10,7 @@ import printlndbg
 class AldebaranParser {
     companion object {
         fun parse(lines: Sequence<String>): LabelledTransitionSystem {
-            printlndbg("Parsing LTS".yellow())
+            printlndbg("Parsing LTS".green())
             val lineIterator = lines.iterator()
 
             val first = lineIterator.next()
@@ -25,7 +25,7 @@ class AldebaranParser {
 
             printlndbg("Init node: $initIndex, transition count: $transitionCount, node count: $nodeCount".yellow())
 
-            val nodes = (0 until nodeCount).map { Node() }.toList()
+            val nodes = (0 until nodeCount).map { i -> Node(i) }.toList()
 
             lineIterator.forEachRemaining { s ->
                 if (s.isNotEmpty()) {
