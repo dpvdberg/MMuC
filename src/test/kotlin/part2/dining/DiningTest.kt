@@ -3,50 +3,61 @@ package part2.dining
 import Evaluation.ImprovedChecker
 import Evaluation.NaiveChecker
 import Facade.ModalMuFacade
+import LTS.Parsing.AldebaranParser
 import LTS.Parsing.AldebaranParserTest
+import ModalMu.Parsing.ModalMuParser
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import toHMS
 import java.io.File
 
 internal class DiningTest {
 
-    private fun getLts() : List<String> {
+    private fun getLts(): List<String> {
+        return getFileNames().map { name -> DiningTest::class.java.getResource(name).readText() }
+    }
+
+    private fun getFileNames(): List<String> {
         return listOf(
-            DiningTest::class.java.getResource("dining_2.aut").readText(),
-            DiningTest::class.java.getResource("dining_3.aut").readText(),
-            DiningTest::class.java.getResource("dining_4.aut").readText(),
-            DiningTest::class.java.getResource("dining_5.aut").readText(),
-            DiningTest::class.java.getResource("dining_6.aut").readText(),
-            DiningTest::class.java.getResource("dining_7.aut").readText(),
-            DiningTest::class.java.getResource("dining_8.aut").readText(),
-            DiningTest::class.java.getResource("dining_9.aut").readText(),
-            DiningTest::class.java.getResource("dining_10.aut").readText(),
-            DiningTest::class.java.getResource("dining_11.aut").readText()
+            "dining_2.aut",
+            "dining_3.aut",
+            "dining_4.aut",
+            "dining_5.aut",
+            "dining_6.aut",
+            "dining_7.aut",
+            "dining_8.aut",
+            "dining_9.aut",
+            "dining_10.aut",
+            "dining_11.aut"
         )
     }
 
-    private fun getFileNames() : List<String> {
-        return listOf<String>("dining_2.aut", "dining_3.aut", "dining_4.aut", "dining_5.aut", "dining_6.aut", "dining_7.aut", "dining_8.aut", "dining_9.aut", "dining_10.aut", "dining_11.aut"
-            )
+    private fun getFormulas(): List<String> {
+        return getInvariantNames().map { name -> DiningTest::class.java.getResource(name).readText() }
     }
 
-    private fun getFormulas() : List<String> {
+    private fun getInvariantNames(): List<String> {
         return listOf(
-            DiningTest::class.java.getResource("invariantly_inevitably_eat.mcf").readText(),
-            DiningTest::class.java.getResource("invariantly_plato_starves.mcf").readText(),
-            DiningTest::class.java.getResource("invariantly_possibly_eat.mcf").readText(),
-            DiningTest::class.java.getResource("plato_infinitely_often_can_eat.mcf").readText()
+            "invariantly_inevitably_eat.mcf",
+            "invariantly_plato_starves.mcf",
+            "invariantly_possibly_eat.mcf",
+            "plato_infinitely_often_can_eat.mcf"
         )
     }
 
-    private fun getInvariantNames() : List<String> {
-        return listOf<String>("invariantly_inevitably_eat.mcf", "invariantly_plato_starves.mcf", "invariantly_possibly_eat.mcf", "plato_infinitely_often_can_eat.mcf"
-            )
-    }
-
-    private fun printResult(resultNaive: Boolean, resultImproved: Boolean, fileName: String, formula: String) {
-        File("dining_results.txt").appendText("$fileName, $formula: naive: $resultNaive, improved: $resultImproved \r\n")
+    private fun printResult(
+        resultNaive: Boolean,
+        naiveMs: Long,
+        resultImproved: Boolean,
+        improvedMs: Long,
+        fileName: String,
+        formula: String
+    ) {
+        File("dining_results.txt")
+            .appendText("$fileName, $formula: naive: $resultNaive, time: ${toHMS(naiveMs)} ($naiveMs ms)\r\n")
+        File("dining_results.txt")
+            .appendText("$fileName, $formula: improved: $resultImproved, time: ${toHMS(improvedMs)} ($improvedMs ms)\n")
     }
 
     @Test
@@ -60,13 +71,16 @@ internal class DiningTest {
         val invNames = getInvariantNames()
 
         for ((i, l) in lts.withIndex()) {
+            val lts = AldebaranParser.parse(l.lineSequence())
             for ((j, f) in formula.withIndex()) {
-                val resultNaive = ModalMuFacade.checkFormulaOnLTS(l, f, NaiveChecker())
-                val resultImproved = ModalMuFacade.checkFormulaOnLTS(l, f, ImprovedChecker())
+                val formula = ModalMuParser.parse(f)
+
+                val (resultNaive, naiveMs) = NaiveChecker().checkTimed(lts, formula)
+                val (resultImproved, improvedMs) = ImprovedChecker().checkTimed(lts, formula)
 
                 print("result of ${fileNames[i]} with ${invNames[j]} is $resultNaive and $resultImproved")
 
-                printResult(resultNaive, resultImproved, fileNames[i], invNames[j])
+                printResult(resultNaive, naiveMs, resultImproved, improvedMs, fileNames[i], invNames[j])
             }
         }
     }

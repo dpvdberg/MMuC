@@ -36,6 +36,14 @@ fun printdbg(message: Any?) {
     }
 }
 
+fun toHMS(ms : Long) : String {
+    return java.lang.String.format(
+        "%02dh:%02dm:%02ds", TimeUnit.MILLISECONDS.toHours(ms),
+        TimeUnit.MILLISECONDS.toMinutes(ms) % TimeUnit.HOURS.toMinutes(1),
+        TimeUnit.MILLISECONDS.toSeconds(ms) % TimeUnit.MINUTES.toSeconds(1)
+    )
+}
+
 class MMuC : CliktCommand() {
     private val extension = ".mcf"
 
@@ -125,11 +133,7 @@ class MMuC : CliktCommand() {
                 println("formula $index: ${formula.second}")
                 if (timer) {
                     val (result, msElapsed) = formulaChecker.checkTimed(lts, formula.first)
-                    val hms = java.lang.String.format(
-                        "%02dh:%02dm:%02ds", TimeUnit.MILLISECONDS.toHours(msElapsed),
-                        TimeUnit.MILLISECONDS.toMinutes(msElapsed) % TimeUnit.HOURS.toMinutes(1),
-                        TimeUnit.MILLISECONDS.toSeconds(msElapsed) % TimeUnit.MINUTES.toSeconds(1)
-                    )
+                    val hms = toHMS(msElapsed)
                     println("Result of formula: $result")
                     println("Elapsed time: $hms ($msElapsed ms)")
                 } else {
