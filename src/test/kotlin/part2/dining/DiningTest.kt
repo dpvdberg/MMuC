@@ -45,7 +45,7 @@ internal class DiningTest {
     }
 
     private fun printResult(resultNaive: Boolean, resultImproved: Boolean, fileName: String, formula: String) {
-        File("dining_results.txt").writeText("$fileName, $formula: naive: $resultNaive, improved: $resultImproved")
+        File("dining_results.txt").appendText("$fileName, $formula: naive: $resultNaive, improved: $resultImproved \r\n")
     }
 
     @Test
