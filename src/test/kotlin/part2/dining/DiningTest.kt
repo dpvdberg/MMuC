@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import toHMS
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 internal class DiningTest {
 
@@ -44,22 +46,27 @@ internal class DiningTest {
     }
 
     private fun printResult(
+        file: String,
         resultNaive: Boolean,
         naiveMs: Long,
+        naiveIteration: Int,
         resultImproved: Boolean,
         improvedMs: Long,
+        improvedIteration: Int,
         fileName: String,
         formula: String
     ) {
-        File("dining_results.txt")
-            .appendText("$fileName, $formula: naive: $resultNaive, time: ${toHMS(naiveMs)} ($naiveMs ms)\r\n")
-        File("dining_results.txt")
-            .appendText("$fileName, $formula: improved: $resultImproved, time: ${toHMS(improvedMs)} ($improvedMs ms)\n")
+        File(file)
+            .appendText("$fileName,$formula,naive,$resultNaive,${toHMS(naiveMs)},$naiveMs,$naiveIteration\r\n")
+        File(file)
+            .appendText("$fileName,$formula,improved,$resultImproved,${toHMS(improvedMs)},$improvedMs,$improvedIteration\n")
     }
 
     @Test
     @Disabled
     fun modalCheckerTest() {
+        val resultFile = SimpleDateFormat("'dining_result.'yyyyMMddHHmm'.csv'").format(Date())
+
         val lts = getLts()
         val formula = getFormulas()
 
@@ -72,12 +79,26 @@ internal class DiningTest {
             for ((j, f) in formula.withIndex()) {
                 val parsedFormula = ModalMuParser.parse(f)
 
-                val (resultNaive, naiveMs) = NaiveChecker().checkTimed(parsedLTS, parsedFormula)
-                val (resultImproved, improvedMs) = ImprovedChecker().checkTimed(parsedLTS, parsedFormula)
+                val naive = NaiveChecker()
+                val (resultNaive, naiveMs) = naive.checkTimed(parsedLTS, parsedFormula)
 
-                print("result of ${fileNames[i]} with ${invNames[j]} is $resultNaive and $resultImproved")
+                val improved = ImprovedChecker()
+                val (resultImproved, improvedMs) = improved.checkTimed(parsedLTS, parsedFormula)
 
-                printResult(resultNaive, naiveMs, resultImproved, improvedMs, fileNames[i], invNames[j])
+
+                println("result of ${fileNames[i]} with ${invNames[j]} is $resultNaive and $resultImproved")
+
+                printResult(
+                    resultFile,
+                    resultNaive,
+                    naiveMs,
+                    naive.iteration,
+                    resultImproved,
+                    improvedMs,
+                    improved.iteration,
+                    fileNames[i],
+                    invNames[j]
+                )
             }
         }
     }

@@ -11,7 +11,6 @@ import printlndbg
 class NaiveChecker : MuFormulaChecker() {
     var iteration = 0
 
-
     override fun check(lts: LabelledTransitionSystem, formula: ModalFormula): Boolean {
         printlndbg("Checking formula against LTS.".green())
         iteration = 0
