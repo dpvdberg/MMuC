@@ -2,11 +2,8 @@ package part2.dining
 
 import Evaluation.ImprovedChecker
 import Evaluation.NaiveChecker
-import Facade.ModalMuFacade
 import LTS.Parsing.AldebaranParser
-import LTS.Parsing.AldebaranParserTest
 import ModalMu.Parsing.ModalMuParser
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import toHMS
@@ -71,12 +68,12 @@ internal class DiningTest {
         val invNames = getInvariantNames()
 
         for ((i, l) in lts.withIndex()) {
-            val lts = AldebaranParser.parse(l.lineSequence())
+            val parsedLTS = AldebaranParser.parse(l.lineSequence())
             for ((j, f) in formula.withIndex()) {
-                val formula = ModalMuParser.parse(f)
+                val parsedFormula = ModalMuParser.parse(f)
 
-                val (resultNaive, naiveMs) = NaiveChecker().checkTimed(lts, formula)
-                val (resultImproved, improvedMs) = ImprovedChecker().checkTimed(lts, formula)
+                val (resultNaive, naiveMs) = NaiveChecker().checkTimed(parsedLTS, parsedFormula)
+                val (resultImproved, improvedMs) = ImprovedChecker().checkTimed(parsedLTS, parsedFormula)
 
                 print("result of ${fileNames[i]} with ${invNames[j]} is $resultNaive and $resultImproved")
 
