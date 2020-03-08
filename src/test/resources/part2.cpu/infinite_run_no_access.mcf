@@ -1,9 +1,0 @@
-nu X. (
-      <i>X
-      ||
-        (          
-        <req_exclusive>X
-        ||
-        <req_shared>X
-        )
-      )
