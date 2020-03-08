@@ -1,8 +1,5 @@
 package ModalMu
 
-import com.sun.org.apache.xpath.internal.operations.Bool
-import javax.swing.tree.VariableHeightLayoutCache
-
 fun ModalFormula.getFixedPoints(): List<Operator> {
     return when (this) {
         is Operator.Mu -> listOf(this) + this.body.getFixedPoints()
