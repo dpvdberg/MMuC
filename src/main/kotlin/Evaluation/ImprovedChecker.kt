@@ -88,10 +88,8 @@ class ImprovedChecker : MuFormulaChecker() {
                 // equal to:
                 // {n in S | forall m in S: !(transition (n,m) has label a) || m in subset}
                 s = lts.nodes.filter { n ->
-                    lts.nodes.all { m ->
-                        n.transitions.none {
-                            (it.destination.equals(m) && it.label == f.label)
-                        } || m in subset
+                    n.transitions.none {t ->
+                        t.label == f.label && t.destination !in subset
                     }
                 }.toSet()
             }

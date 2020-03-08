@@ -44,6 +44,10 @@ fun toHMS(ms : Long) : String {
     )
 }
 
+fun toHMSandMs(ms : Long) : String {
+    return toHMS(ms) + " ($ms ms)"
+}
+
 class MMuC : CliktCommand() {
     private val extension = ".mcf"
 
@@ -133,9 +137,9 @@ class MMuC : CliktCommand() {
                 println("formula $index: ${formula.second}")
                 if (timer) {
                     val (result, msElapsed) = formulaChecker.checkTimed(lts, formula.first)
-                    val hms = toHMS(msElapsed)
+                    val hms = toHMSandMs(msElapsed)
                     println("Result of formula: $result")
-                    println("Elapsed time: $hms ($msElapsed ms)")
+                    println("Elapsed time: $hms")
                 } else {
                     val result = formulaChecker.check(lts, formula.first)
                     println("Result of formula: $result")

@@ -102,6 +102,4 @@ internal class DiningTest {
             }
         }
     }
-
-
 }
