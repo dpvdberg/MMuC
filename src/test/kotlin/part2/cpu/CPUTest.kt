@@ -1,4 +1,4 @@
-package LTS.Parsing.part2.cpu
+package part2.cpu
 
 import Evaluation.ImprovedChecker
 import Evaluation.NaiveChecker
