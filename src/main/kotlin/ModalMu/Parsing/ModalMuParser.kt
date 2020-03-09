@@ -1,10 +1,12 @@
 package ModalMu.Parsing
 
+import Exception.ParsingException
 import ModalMu.*
 import ModalMu.Parsing.Grammar.ModalMuLexer
 import ModalMu.Parsing.Grammar.ModalMuParser
 import ModalMu.Parsing.Grammar.VisitModalMu
 import com.andreapivetta.kolor.green
+import com.andreapivetta.kolor.red
 import com.andreapivetta.kolor.yellow
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
@@ -21,6 +23,12 @@ class ModalMuParser {
             val visitor = VisitModalMu()
 
             val modalFormula = visitor.visit(parser.formula())
+
+            if (parser.numberOfSyntaxErrors > 0) {
+                printlndbg("Errors found during mu formula parsing.".red())
+                throw ParsingException("Syntax error in formula: $formula")
+            }
+
             setParent(modalFormula)
             printlndbg("Parse success".green())
             return modalFormula

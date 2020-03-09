@@ -1,5 +1,6 @@
 import Evaluation.ImprovedChecker
 import Evaluation.NaiveChecker
+import Exception.ParsingException
 import LTS.Parsing.AldebaranParser
 import ModalMu.ModalFormula
 import ModalMu.Parsing.ModalMuParser
@@ -106,17 +107,37 @@ class MMuC : CliktCommand() {
 
         println("Reading and parsing formulas...")
         val formulasWithName = mutableListOf<Pair<ModalFormula, String>>()
-        formulasWithName += formulas.mapIndexed { i, s ->  Pair(ModalMuParser.parse(s), "Textual formula $i") }
-        formulasWithName += formulaFiles.map { f -> Pair(ModalMuParser.parse(f.readText()), "Formula file: ${f.name}") }
+        try {
+            formulasWithName += formulas.mapIndexed { i, s -> Pair(ModalMuParser.parse(s), "Textual formula $i") }
+            formulasWithName += formulaFiles.map { f ->
+                Pair(
+                    ModalMuParser.parse(f.readText()),
+                    "Formula file: ${f.name}"
+                )
+            }
 
-        formulaDir
-            ?.listFiles { _, fileName -> fileName.toLowerCase().endsWith(extension) }
-            ?.forEach { f -> formulasWithName += Pair(ModalMuParser.parse(f.readText()), "Formula file in directory: ${f.name}") }
+            formulaDir
+                ?.listFiles { _, fileName -> fileName.toLowerCase().endsWith(extension) }
+                ?.forEach { f ->
+                    formulasWithName += Pair(
+                        ModalMuParser.parse(f.readText()),
+                        "Formula file in directory: ${f.name}"
+                    )
+                }
 
-        if (autoFindFormulas) {
-            ltsFile.parentFile
-                .listFiles { _, fileName -> fileName.toLowerCase().endsWith(extension) }
-                ?.forEach { f -> formulasWithName += Pair(ModalMuParser.parse(f.readText()), "Formula file found in LTS dir: ${f.name}") }
+            if (autoFindFormulas) {
+                ltsFile.parentFile
+                    .listFiles { _, fileName -> fileName.toLowerCase().endsWith(extension) }
+                    ?.forEach { f ->
+                        formulasWithName += Pair(
+                            ModalMuParser.parse(f.readText()),
+                            "Formula file found in LTS dir: ${f.name}"
+                        )
+                    }
+            }
+        } catch (e : ParsingException) {
+            println("Stopping due to parsing errors.".red())
+            return
         }
 
         if (formulasWithName.size <= 0) {
