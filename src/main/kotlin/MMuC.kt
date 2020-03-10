@@ -37,11 +37,12 @@ fun printdbg(message: Any?) {
     }
 }
 
-fun toHMS(ms : Long) : String {
+
+fun toHMS(units : Long, base : TimeUnit = TimeUnit.MILLISECONDS) : String {
     return java.lang.String.format(
-        "%02dh:%02dm:%02ds", TimeUnit.MILLISECONDS.toHours(ms),
-        TimeUnit.MILLISECONDS.toMinutes(ms) % TimeUnit.HOURS.toMinutes(1),
-        TimeUnit.MILLISECONDS.toSeconds(ms) % TimeUnit.MINUTES.toSeconds(1)
+        "%02dh:%02dm:%02ds", base.toHours(units),
+        base.toMinutes(units) % TimeUnit.HOURS.toMinutes(1),
+        base.toSeconds(units) % TimeUnit.MINUTES.toSeconds(1)
     )
 }
 

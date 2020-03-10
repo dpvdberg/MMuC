@@ -10,6 +10,7 @@ import toHMS
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 internal class DiningTest {
 
@@ -48,18 +49,28 @@ internal class DiningTest {
     private fun printResult(
         file: String,
         resultNaive: Boolean,
-        naiveMs: Long,
+        naiveNs: Long,
         naiveIteration: Int,
         resultImproved: Boolean,
-        improvedMs: Long,
+        improvedNs: Long,
         improvedIteration: Int,
         fileName: String,
         formula: String
     ) {
         File(file)
-            .appendText("$fileName,$formula,naive,$resultNaive,${toHMS(naiveMs)},$naiveMs,$naiveIteration\r\n")
+            .appendText(
+                "$fileName,$formula,naive,$resultNaive,${toHMS(
+                    naiveNs,
+                    TimeUnit.NANOSECONDS
+                )},$naiveNs,$naiveIteration\r\n"
+            )
         File(file)
-            .appendText("$fileName,$formula,improved,$resultImproved,${toHMS(improvedMs)},$improvedMs,$improvedIteration\n")
+            .appendText(
+                "$fileName,$formula,improved,$resultImproved,${toHMS(
+                    improvedNs,
+                    TimeUnit.NANOSECONDS
+                )},$improvedNs,$improvedIteration\n"
+            )
     }
 
     @Test
@@ -79,11 +90,11 @@ internal class DiningTest {
             for ((j, f) in formula.withIndex()) {
                 val parsedFormula = ModalMuParser.parse(f)
 
-                val naive = NaiveChecker()
-                val (resultNaive, naiveMs) = naive.checkTimed(parsedLTS, parsedFormula)
+                var naive = NaiveChecker()
+                var (resultNaive, naiveNs) = naive.checkTimed(parsedLTS, parsedFormula, false)
 
-                val improved = ImprovedChecker()
-                val (resultImproved, improvedMs) = improved.checkTimed(parsedLTS, parsedFormula)
+                var improved = ImprovedChecker()
+                var (resultImproved, improvedNs) = improved.checkTimed(parsedLTS, parsedFormula, false)
 
 
                 println("result of ${fileNames[i]} with ${invNames[j]} is $resultNaive and $resultImproved")
@@ -91,10 +102,10 @@ internal class DiningTest {
                 printResult(
                     resultFile,
                     resultNaive,
-                    naiveMs,
+                    naiveNs,
                     naive.iteration,
                     resultImproved,
-                    improvedMs,
+                    improvedNs,
                     improved.iteration,
                     fileNames[i],
                     invNames[j]

@@ -2,14 +2,37 @@ from collections import namedtuple
 import matplotlib.pyplot as plt
 import csv
 
-resultfile = "../dining_result.202003091625.csv"
+resultfile = "../dining_result.202003101703.csv"
+skip_last_files = 1
 
-Result = namedtuple('Result', 'file formula algorithm result time_fancy time_ms iterations')
-SimpleResult = namedtuple('SimpleResult', 'file result time_ms iterations')
+Result = namedtuple('Result', 'file formula algorithm result time_fancy time_ns iterations')
+SimpleResult = namedtuple('SimpleResult', 'file result time_ns iterations')
+
+matching_dict = {}
+styles = ['^', 'o']
+colors = ['r', 'g', 'b', 'y']
+
+
+def get_matching(data, matching):
+    global matching_dict
+
+    for match in matching:
+        # try to find already used matching
+        if match in matching_dict and matching_dict[match] == data:
+            return match
+
+    # find new match and set
+    for match in matching:
+        if match not in matching_dict:
+            matching_dict[match] = data
+            return match
+
+    raise Exception(
+        "No remaining free matching for {} and data {}, matching dict {}".format(matching, data, matching_dict))
 
 
 def result_to_simple(result):
-    return SimpleResult(result.file, result.result, int(result.time_ms), int(result.iterations))
+    return SimpleResult(result.file, result.result, int(result.time_ns), int(result.iterations))
 
 
 def remove_duplicates(seq):
@@ -23,7 +46,9 @@ with open(resultfile, newline='') as csvfile:
 
 formulas = remove_duplicates([r.formula for r in results])
 algorithms = remove_duplicates([r.algorithm for r in results])
-files = remove_duplicates([r.file for r in results])[:-1]
+files = remove_duplicates([r.file for r in results])
+if skip_last_files > 0:
+    files = files[:-skip_last_files]
 
 result_dict = {}
 
@@ -36,16 +61,32 @@ for formula in formulas:
         for r in [r for r in results if r.algorithm == algorithm and r.formula == formula]:
             result_dict[formula][algorithm].append(result_to_simple(r))
 
-for formula in formulas:
-    for algorithm in algorithms:
-        # plt.plot(files, [r.time_ms for r in result_dict[formula][algorithm]], 'ro')
-        # plt.show()
 
-        fig, ax = plt.subplots()
-        ax.plot(files, [r.time_ms for r in result_dict[formula][algorithm]], 'ro')
-        fig.autofmt_xdate()
-        fig.show()
-        # fig.xticks(range(0, len(files) + 1))
-        # ax.tick_params(axis='both', which='major')
-        # ax.set_xticklabels(files, rotation=45)
-        # fig.savefig('test_rotation.png', dpi=300, format='png', bbox_inches='tight')
+def get_results(f, alg):
+    filtered = result_dict[f][alg]
+    if skip_last_files > 0:
+        filtered = filtered[:-skip_last_files]
+    return filtered
+
+
+def ns_to_s(ns):
+    return ns / 1_000_000_000.0
+
+
+fig, ax = plt.subplots(len(formulas))
+index = 0
+for formula in formulas:
+    print(index)
+    for algorithm in algorithms:
+        ax[index].plot(files,
+                       [ns_to_s(r.time_ns) for r in get_results(formula, algorithm)],
+                       marker='o'
+                       )
+    index = index + 1
+
+plt.yscale('log')
+plt.title("log scale of '%s'" % (formula))
+plt.grid(True)
+
+fig.autofmt_xdate()
+fig.show()

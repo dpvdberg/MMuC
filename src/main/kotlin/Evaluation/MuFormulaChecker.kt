@@ -6,9 +6,17 @@ import ModalMu.ModalFormula
 abstract class MuFormulaChecker {
     abstract fun check(lts : LabelledTransitionSystem, formula : ModalFormula) : Boolean
 
-    fun checkTimed(lts : LabelledTransitionSystem, formula : ModalFormula) : Pair<Boolean, Long> {
-        val start = System.currentTimeMillis()
+    private fun getTime(useMs : Boolean) : Long {
+        return if (useMs) {
+            System.currentTimeMillis()
+        } else {
+            System.nanoTime()
+        }
+    }
+
+    fun checkTimed(lts : LabelledTransitionSystem, formula : ModalFormula, useMs : Boolean = true) : Pair<Boolean, Long> {
+        val start = getTime(useMs)
         val result = check(lts, formula)
-        return Pair(result, System.currentTimeMillis() - start)
+        return Pair(result, getTime(useMs) - start)
     }
 }
