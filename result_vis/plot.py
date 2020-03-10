@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import csv
 
 resultfile = "../dining_result.202003101703.csv"
-skip_last_files = 1
+skip_last_files = 0
 
 Result = namedtuple('Result', 'file formula algorithm result time_fancy time_ns iterations')
 SimpleResult = namedtuple('SimpleResult', 'file result time_ns iterations')
@@ -73,20 +73,18 @@ def ns_to_s(ns):
     return ns / 1_000_000_000.0
 
 
-fig, ax = plt.subplots(len(formulas))
-index = 0
 for formula in formulas:
-    print(index)
+    fig, ax = plt.subplots()
     for algorithm in algorithms:
-        ax[index].plot(files,
-                       [ns_to_s(r.time_ns) for r in get_results(formula, algorithm)],
-                       marker='o'
-                       )
-    index = index + 1
+        ax.plot(files, [ns_to_s(r.time_ns) for r in get_results(formula, algorithm)],
+                marker='o'
+                )
 
-plt.yscale('log')
-plt.title("log scale of '%s'" % (formula))
-plt.grid(True)
+    ax.set_ylabel('Time (seconds)')
+    ax.set_xlabel('Labelled Transition System')
+    plt.yscale('log')
+    plt.title("Log scale plot of '%s'" % (formula))
+    plt.grid(True)
 
-fig.autofmt_xdate()
-fig.show()
+    fig.autofmt_xdate()
+    fig.show()

@@ -96,6 +96,18 @@ internal class DiningTest {
                 var improved = ImprovedChecker()
                 var (resultImproved, improvedNs) = improved.checkTimed(parsedLTS, parsedFormula, false)
 
+                // Fix boot up
+                if (i == 0 && j == 0) {
+                    naive = NaiveChecker()
+                    val naive = naive.checkTimed(parsedLTS, parsedFormula, false)
+                    resultNaive = naive.first
+                    naiveNs = naive.second
+
+                    improved = ImprovedChecker()
+                    val improved = improved.checkTimed(parsedLTS, parsedFormula, false)
+                    resultImproved = improved.first
+                    improvedNs = improved.second
+                }
 
                 println("result of ${fileNames[i]} with ${invNames[j]} is $resultNaive and $resultImproved")
 
