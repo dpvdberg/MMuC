@@ -90,7 +90,7 @@ for formula in formulas:
     ax.legend()
     ax.set_ylabel('Time (seconds)')
     ax.set_xlabel('Labelled Transition System')
-    plt.yscale('log')
+    # plt.yscale('log')
     plt.title("Log scale of the evaluation time for\n'%s'" % formula)
     plt.grid(True)
 
