@@ -4,7 +4,7 @@ import csv
 import os
 
 resultfile = "../dining_result.202003101703.csv"
-outdir = "out"
+outdir = "out/dining"
 skip_last_files = 0
 
 if not os.path.exists(outdir):
