@@ -10,6 +10,7 @@ import toHMS
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 internal class CPUTest {
 
@@ -43,18 +44,28 @@ internal class CPUTest {
     private fun printResult(
         file: String,
         resultNaive: Boolean,
-        naiveMs: Long,
+        naiveNs: Long,
         naiveIteration: Int,
         resultImproved: Boolean,
-        improvedMs: Long,
+        improvedNs: Long,
         improvedIteration: Int,
         fileName: String,
         formula: String
     ) {
         File(file)
-            .appendText("$fileName,$formula,naive,$resultNaive,${toHMS(naiveMs)},$naiveMs,$naiveIteration\r\n")
+            .appendText(
+                "$fileName,$formula,naive,$resultNaive,${toHMS(
+                    naiveNs,
+                    TimeUnit.NANOSECONDS
+                )},$naiveNs,$naiveIteration\r\n"
+            )
         File(file)
-            .appendText("$fileName,$formula,improved,$resultImproved,${toHMS(improvedMs)},$improvedMs,$improvedIteration\n")
+            .appendText(
+                "$fileName,$formula,improved,$resultImproved,${toHMS(
+                    improvedNs,
+                    TimeUnit.NANOSECONDS
+                )},$improvedNs,$improvedIteration\n"
+            )
     }
 
     @Test
@@ -74,22 +85,34 @@ internal class CPUTest {
             for ((j, f) in formula.withIndex()) {
                 val parsedFormula = ModalMuParser.parse(f)
 
-                val naive = NaiveChecker()
-                val (resultNaive, naiveMs) = naive.checkTimed(parsedLTS, parsedFormula)
+                var naive = NaiveChecker()
+                var (resultNaive, naiveNs) = naive.checkTimed(parsedLTS, parsedFormula, false)
 
-                val improved = ImprovedChecker()
-                val (resultImproved, improvedMs) = improved.checkTimed(parsedLTS, parsedFormula)
+                var improved = ImprovedChecker()
+                var (resultImproved, improvedNs) = improved.checkTimed(parsedLTS, parsedFormula, false)
 
+                // Fix boot up
+                if (i == 0 && j == 0) {
+                    naive = NaiveChecker()
+                    val naive = naive.checkTimed(parsedLTS, parsedFormula, false)
+                    resultNaive = naive.first
+                    naiveNs = naive.second
+
+                    improved = ImprovedChecker()
+                    val improved = improved.checkTimed(parsedLTS, parsedFormula, false)
+                    resultImproved = improved.first
+                    improvedNs = improved.second
+                }
 
                 println("result of ${fileNames[i]} with ${invNames[j]} is $resultNaive and $resultImproved")
 
                 printResult(
                     resultFile,
                     resultNaive,
-                    naiveMs,
+                    naiveNs,
                     naive.iteration,
                     resultImproved,
-                    improvedMs,
+                    improvedNs,
                     improved.iteration,
                     fileNames[i],
                     invNames[j]

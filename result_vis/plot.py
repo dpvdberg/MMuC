@@ -77,9 +77,10 @@ for formula in formulas:
     fig, ax = plt.subplots()
     for algorithm in algorithms:
         ax.plot(files, [ns_to_s(r.time_ns) for r in get_results(formula, algorithm)],
-                marker='o'
+                marker='o', label=algorithm
                 )
 
+    ax.legend()
     ax.set_ylabel('Time (seconds)')
     ax.set_xlabel('Labelled Transition System')
     plt.yscale('log')
@@ -88,3 +89,19 @@ for formula in formulas:
 
     fig.autofmt_xdate()
     fig.show()
+
+
+# for formula in formulas:
+#     fig, ax = plt.subplots()
+#     for algorithm in algorithms:
+#         ax.plot(files, [r.iterations for r in get_results(formula, algorithm)],
+#                 marker='o'
+#                 )
+#
+#     ax.set_ylabel('Iterations of eval()')
+#     ax.set_xlabel('Labelled Transition System')
+#     plt.title("'%s'" % (formula))
+#     plt.grid(True)
+#
+#     fig.autofmt_xdate()
+#     fig.show()
