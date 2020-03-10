@@ -1,9 +1,14 @@
 from collections import namedtuple
 import matplotlib.pyplot as plt
 import csv
+import os
 
 resultfile = "../dining_result.202003101703.csv"
+outdir = "out"
 skip_last_files = 0
+
+if not os.path.exists(outdir):
+    os.mkdir(outdir)
 
 Result = namedtuple('Result', 'file formula algorithm result time_fancy time_ns iterations')
 SimpleResult = namedtuple('SimpleResult', 'file result time_ns iterations')
@@ -86,12 +91,13 @@ for formula in formulas:
     ax.set_ylabel('Time (seconds)')
     ax.set_xlabel('Labelled Transition System')
     plt.yscale('log')
-    plt.title("Log scale of the evaluation time for\n'%s'" % (formula))
+    plt.title("Log scale of the evaluation time for\n'%s'" % formula)
     plt.grid(True)
 
     fig.autofmt_xdate()
     fig.show()
 
+    fig.savefig(os.path.join(outdir, "time_%s.pdf" % formula), bbox_inches='tight')
 
 for formula in formulas:
     fig, ax = plt.subplots()
@@ -105,8 +111,10 @@ for formula in formulas:
     ax.legend()
     ax.set_ylabel('Iterations of eval()')
     ax.set_xlabel('Labelled Transition System')
-    plt.title("Iteration count of eval() for\n'%s'" % (formula))
+    plt.title("Iteration count of eval() for\n'%s'" % formula)
     plt.grid(True)
 
     fig.autofmt_xdate()
     fig.show()
+
+    fig.savefig(os.path.join(outdir, "iterations_%s.pdf" % formula), bbox_inches='tight')
