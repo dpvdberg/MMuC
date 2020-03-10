@@ -86,7 +86,7 @@ for formula in formulas:
     ax.set_ylabel('Time (seconds)')
     ax.set_xlabel('Labelled Transition System')
     plt.yscale('log')
-    plt.title("Log scale plot evaluation time for '%s'" % (formula))
+    plt.title("Log scale of the evaluation time for\n'%s'" % (formula))
     plt.grid(True)
 
     fig.autofmt_xdate()
@@ -105,7 +105,7 @@ for formula in formulas:
     ax.legend()
     ax.set_ylabel('Iterations of eval()')
     ax.set_xlabel('Labelled Transition System')
-    plt.title("Iteration count of eval() for '%s'" % (formula))
+    plt.title("Iteration count of eval() for\n'%s'" % (formula))
     plt.grid(True)
 
     fig.autofmt_xdate()
