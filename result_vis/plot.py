@@ -73,35 +73,37 @@ def ns_to_s(ns):
     return ns / 1_000_000_000.0
 
 
-for formula in formulas:
-    fig, ax = plt.subplots()
-    for algorithm in algorithms:
-        ax.plot(files, [ns_to_s(r.time_ns) for r in get_results(formula, algorithm)],
-                marker='o', label=algorithm
-                )
-
-    ax.legend()
-    ax.set_ylabel('Time (seconds)')
-    ax.set_xlabel('Labelled Transition System')
-    plt.yscale('log')
-    plt.title("Log scale plot of '%s'" % (formula))
-    plt.grid(True)
-
-    fig.autofmt_xdate()
-    fig.show()
-
-
 # for formula in formulas:
 #     fig, ax = plt.subplots()
 #     for algorithm in algorithms:
-#         ax.plot(files, [r.iterations for r in get_results(formula, algorithm)],
-#                 marker='o'
+#         ax.plot(files, [ns_to_s(r.time_ns) for r in get_results(formula, algorithm)],
+#                 marker='o', label=algorithm
 #                 )
 #
-#     ax.set_ylabel('Iterations of eval()')
+#     ax.legend()
+#     ax.set_ylabel('Time (seconds)')
 #     ax.set_xlabel('Labelled Transition System')
-#     plt.title("'%s'" % (formula))
+#     plt.yscale('log')
+#     plt.title("Log scale plot of '%s'" % (formula))
 #     plt.grid(True)
 #
 #     fig.autofmt_xdate()
 #     fig.show()
+
+
+for formula in formulas:
+    fig, ax = plt.subplots()
+    for algorithm in algorithms:
+        ax.plot(files, [r.iterations for r in get_results(formula, algorithm)],
+                marker='o', label=algorithm
+                )
+
+    ax.set_ylim(bottom=0)
+    ax.legend()
+    ax.set_ylabel('Iterations of eval()')
+    ax.set_xlabel('Labelled Transition System')
+    plt.title("'%s'" % (formula))
+    plt.grid(True)
+
+    fig.autofmt_xdate()
+    fig.show()
