@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import csv
 import os
 
-resultfile = "../cpu_results.202003101739.csv"
-outdir = "out/cpu"
+resultfile = "../demanding_results.202003111338.csv"
+outdir = "out/demanding"
 skip_last_files = 0
 
 if not os.path.exists(outdir):
@@ -90,7 +90,7 @@ for formula in formulas:
     ax.legend()
     ax.set_ylabel('Time (seconds)')
     ax.set_xlabel('Labelled Transition System')
-    # plt.yscale('log')
+    plt.yscale('log')
     plt.title("Log scale of the evaluation time for\n'%s'" % formula)
     plt.grid(True)
 
