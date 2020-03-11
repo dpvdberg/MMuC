@@ -1,0 +1,4 @@
+%nu X. <won> true || ([choose1] X && [choose2] X)
+
+nu X. ([choose1]X && ([choose2] X
+	&& mu Y. ( <won> true || [choose1]<choose2> Y)))

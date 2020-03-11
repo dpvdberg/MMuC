@@ -1,0 +1,3 @@
+% Is this still ok?
+
+nu X. ([playing](nu Y. [wisdom]false && ([playing]false && ([i]Y && [wisdom]X))) && ([i]X && ([wisdom]X && [ask]X)))
