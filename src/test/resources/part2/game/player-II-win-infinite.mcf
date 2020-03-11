@@ -1,1 +1,1 @@
-nu X. ([choose1] X && ([choose2] X && mu Y. (<won> true || ([choose1] Y || <choose2>Y))))
+nu X. ([choose1] X && ([choose2] X && mu Y. (<choose2>(<won> true && X) || ([choose1] Y || <choose2>Y))))
