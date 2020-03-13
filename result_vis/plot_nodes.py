@@ -1,7 +1,10 @@
 from collections import namedtuple
 import matplotlib.pyplot as plt
+import matplotlib
 import csv
 import os
+
+from matplotlib.ticker import ScalarFormatter
 
 fig, ax = plt.subplots()
 ax.plot(['dining_%d.aut' % x for x in [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]],
