@@ -21,7 +21,7 @@ class NaiveChecker : MuFormulaChecker() {
         // Go to next line
         printlndbg("")
 
-        printdbg("Valid in states:".green())
+        printdbg("Valid in states: ".green())
         printlndbg("{${states.joinToString { n -> n.index.toString() }}}".yellow())
 
         return lts.initialNode in states
@@ -80,6 +80,7 @@ class NaiveChecker : MuFormulaChecker() {
                 }
         }
 
+        printlndbg("\n $f -> {${s.joinToString { n -> n.index.toString() }}}".yellow())
         return s
     }
 }

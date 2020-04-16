@@ -15,25 +15,57 @@ sealed class ModalFormula(var parent : ModalFormula? = null) {
         }
 }
 
-class And(var left: ModalFormula, var right: ModalFormula) : ModalFormula()
+class And(var left: ModalFormula, var right: ModalFormula) : ModalFormula() {
+    override fun toString(): String {
+        return "($left && $right)"
+    }
+}
 
-class Exists(var label: String, var body: ModalFormula) : ModalFormula()
+class Exists(var label: String, var body: ModalFormula) : ModalFormula() {
+    override fun toString(): String {
+        return "<$label>$body"
+    }
+}
 
-class ForAll(var label: String, var body: ModalFormula) : ModalFormula()
+class ForAll(var label: String, var body: ModalFormula) : ModalFormula() {
+    override fun toString(): String {
+        return "[$label]$body"
+    }
+}
 
 sealed class Operator(var variable: Variable, var body: ModalFormula) : ModalFormula() {
 
-    class Mu(v: Variable, b: ModalFormula) : Operator(v, b)
+    class Mu(v: Variable, b: ModalFormula) : Operator(v, b) {
+        override fun toString(): String {
+            return "mu $variable. $body"
+        }
+    }
 
-    class Nu(v: Variable, b: ModalFormula) : Operator(v, b)
+    class Nu(v: Variable, b: ModalFormula) : Operator(v, b) {
+        override fun toString(): String {
+            return "nu $variable. $body"
+        }
+    }
 
 }
 
-class Or(var left: ModalFormula, var right: ModalFormula) : ModalFormula()
+class Or(var left: ModalFormula, var right: ModalFormula) : ModalFormula() {
+    override fun toString(): String {
+        return "($left || $right)"
+    }
+}
 
-object TrueProposition : ModalFormula()
+object TrueProposition : ModalFormula() {
+    override fun toString(): String {
+        return "true"
+    }
+}
 
-object FalseProposition : ModalFormula()
+object FalseProposition : ModalFormula() {
+    override fun toString(): String {
+        return "false"
+    }
+}
 
 class Variable(var name: Char) : ModalFormula() {
     override fun equals(other: Any?): Boolean {
@@ -45,5 +77,9 @@ class Variable(var name: Char) : ModalFormula() {
 
     override fun hashCode(): Int {
         return name.hashCode()
+    }
+
+    override fun toString(): String {
+        return name.toString()
     }
 }

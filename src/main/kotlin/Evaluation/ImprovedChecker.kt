@@ -127,6 +127,7 @@ class ImprovedChecker : MuFormulaChecker() {
             values[f] = s
         }
 
+        printlndbg("\n $f -> {${s.joinToString { n -> n.index.toString() }}}".yellow())
         return s
     }
 }
