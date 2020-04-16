@@ -13,7 +13,6 @@ import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.file
-import javafx.util.Duration.millis
 import java.util.concurrent.TimeUnit
 
 
