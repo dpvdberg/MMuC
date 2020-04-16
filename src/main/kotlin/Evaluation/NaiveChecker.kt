@@ -4,6 +4,7 @@ import LTS.LabelledTransitionSystem
 import LTS.Node
 import ModalMu.*
 import com.andreapivetta.kolor.green
+import com.andreapivetta.kolor.red
 import com.andreapivetta.kolor.yellow
 import printdbg
 import printlndbg
@@ -33,6 +34,7 @@ class NaiveChecker : MuFormulaChecker() {
         environment: MutableMap<Variable, Set<Node>>
     ): Set<Node> {
         printdbg("${iteration++}, ".yellow())
+        printlndbg("$f".red())
         var s = emptySet<Node>()
 
         when (f) {
@@ -80,7 +82,7 @@ class NaiveChecker : MuFormulaChecker() {
                 }
         }
 
-        printlndbg("\n $f -> {${s.joinToString { n -> n.index.toString() }}}".yellow())
+        printlndbg("\r\nYield set: {${s.joinToString { n -> n.index.toString() }}}".yellow())
         return s
     }
 }

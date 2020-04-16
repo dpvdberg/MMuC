@@ -4,6 +4,7 @@ import LTS.LabelledTransitionSystem
 import LTS.Node
 import ModalMu.*
 import com.andreapivetta.kolor.green
+import com.andreapivetta.kolor.red
 import com.andreapivetta.kolor.yellow
 import printdbg
 import printlndbg
@@ -45,6 +46,7 @@ class ImprovedChecker : MuFormulaChecker() {
         alreadyEvaluated: MutableMap<ModalFormula, Boolean>, values: MutableMap<ModalFormula, Set<Node>>
     ): Set<Node> {
         printdbg("${iteration++}, ".yellow())
+        printlndbg("$f".red())
         var s = emptySet<Node>()
 
         if (alreadyEvaluated.getOrDefault(f, false)) {
@@ -127,7 +129,7 @@ class ImprovedChecker : MuFormulaChecker() {
             values[f] = s
         }
 
-        printlndbg("\n $f -> {${s.joinToString { n -> n.index.toString() }}}".yellow())
+        printlndbg("\r\nYield set: {${s.joinToString { n -> n.index.toString() }}}".yellow())
         return s
     }
 }
