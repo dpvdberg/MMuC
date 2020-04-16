@@ -102,14 +102,10 @@ class ImprovedChecker : MuFormulaChecker() {
                                 environment[g.variable] = emptySet()
                             }
                         }
-                        var fpit = 0
-                        printlndbg("Entering Mu fixed point loop".green())
                         do {
                             s = environment.getOrDefault(f.variable, emptySet())
                             environment[f.variable] = eval(lts, f.body, environment, alreadyEvaluated, values)
-                            fpit++
                         } while (environment[f.variable]!! != s)
-                        printlndbg("Mu fixed point operations: $fpit".green())
                     }
                     is Operator.Nu -> {
                         if (f.getSurroundingFixedPoint() is Operator.Mu) {
@@ -118,14 +114,10 @@ class ImprovedChecker : MuFormulaChecker() {
                                 environment[g.variable] = lts.nodes.toSet()
                             }
                         }
-                        var fpit = 0
-                        printlndbg("Entering Nu fixed point loop".green())
                         do {
                             s = environment.getOrDefault(f.variable, emptySet())
                             environment[f.variable] = eval(lts, f.body, environment, alreadyEvaluated, values)
-                            fpit++
                         } while (environment[f.variable]!! != s)
-                        printlndbg("Nu fixed point operations: $fpit".green())
                     }
                 }
         }

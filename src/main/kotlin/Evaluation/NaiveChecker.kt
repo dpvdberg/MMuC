@@ -65,25 +65,17 @@ class NaiveChecker : MuFormulaChecker() {
                 when (f) {
                     is Operator.Mu -> {
                         environment[f.variable] = emptySet()
-                        var fpit = 0
-                        printlndbg("Entering Mu fixed point loop".green())
                         do {
                             s = environment[f.variable]!!
                             environment[f.variable] = eval(lts, f.body, environment)
-                            fpit++
                         } while (environment[f.variable]!! != s)
-                        printlndbg("Mu fixed point operations: $fpit".green())
                     }
                     is Operator.Nu -> {
                         environment[f.variable] = lts.nodes.toSet()
-                        var fpit = 0
-                        printlndbg("Entering Nu fixed point loop".green())
                         do {
                             s = environment[f.variable]!!
                             environment[f.variable] = eval(lts, f.body, environment)
-                            fpit++
                         } while (environment[f.variable]!! != s)
-                        printlndbg("Nu fixed point operations: $fpit".green())
                     }
                 }
         }
